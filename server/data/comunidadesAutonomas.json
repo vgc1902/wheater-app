@@ -1,0 +1,21 @@
+[
+	{ "name": "Andalucía", "code": "and" },
+	{ "name": "Aragón", "code": "arn" },
+	{ "name": "Canarias", "code": "coo" },
+	{ "name": "Cantabria", "code": "can" },
+	{ "name": "Castilla-La Mancha", "code": "clm" },
+	{ "name": "Castilla y León", "code": "cle" },
+	{ "name": "Cataluña", "code": "cat" },
+	{ "name": "Ciudad de Ceuta", "code": "ceu" },
+	{ "name": "Ciudad de Melilla", "code": "mel" },
+	{ "name": "Comunidad de Madrid", "code": "mad" },
+	{ "name": "Comunidad Foral de Navarra", "code": "nav" },
+	{ "name": "Comunidad Valenciana", "code": "val" },
+	{ "name": "Extremadura", "code": "ext" },
+	{ "name": "Galicia", "code": "gal" },
+	{ "name": "Illes Balears", "code": "bal" },
+	{ "name": "La Rioja", "code": "rio" },
+	{ "name": "País Vasco", "code": "pva" },
+	{ "name": "Principado de Asturias", "code": "ast" },
+	{ "name": "Región de Murcia", "code": "mur" }
+]
