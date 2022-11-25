@@ -6,6 +6,7 @@ const express = require("express");
 const app = express();
 
 const comunityData = require("./data/comunidadesAutonomas.json");
+const towns = require("./data/municipios");
 const stream = fs.createWriteStream("./data/resumen.csv");
 
 app.use("/", express.static(path.join(__dirname, "..", "public")));
@@ -32,6 +33,12 @@ app.get("/api/v1/resume", (req, res) => {
 
 app.get("/api/v1/autonomous_comunity", (req, res) => {
 	res.send(comunityData);
+});
+
+app.get("/api/v1/towns/:id", (req, res) => {
+	console.log(req.params.id);
+	const id = req.params.id
+	res.send(towns[id]);
 });
 
 app.get("/*", (_req, res) => {
