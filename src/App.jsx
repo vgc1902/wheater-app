@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { VechaiProvider, Select } from "@vechaiui/react";
 import axios from "axios";
 import apiRoutes from "./constants/apiRoutes";
 
@@ -15,13 +16,15 @@ function App() {
 	}, []);
 
 	return (
-		<div className="App">
-			<ul>
-				{comunities.map(({ name, code }) => (
-					<li key={code}>{name}</li>
-				))}
-			</ul>
-		</div>
+		<VechaiProvider className="App">
+			<div className="container mx-auto py-24 px-5">
+				<Select>
+					{comunities.map(({ name, code }) => (
+						<option key={code}>{name}</option>
+					))}
+				</Select>
+			</div>
+		</VechaiProvider>
 	);
 }
 
