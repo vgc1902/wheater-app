@@ -1,15 +1,12 @@
 const path = require("path");
 const https = require("https");
+const parser = require("xml2json");
 const fs = require("fs");
-const csv = require("csvtojson");
 const express = require("express");
 const app = express();
 
 const comunityData = require("./data/comunidadesAutonomas.json");
 const towns = require("./data/municipios");
-const stream = fs.createWriteStream("./data/resumen.csv");
-
-app.use("/", express.static(path.join(__dirname, "..", "public")));
 
 app.use(function (req, res, next) {
 	res.setHeader("Access-Control-Allow-Origin", "*");
@@ -19,26 +16,38 @@ app.use(function (req, res, next) {
 	next();
 });
 
-app.get("/api/v1/resume", (req, res) => {
-	https.get(
-		"https://www.aemet.es/es/eltiempo/observacion/ultimosdatos_comunitat-valenciana_resumen-martes-22.csv?k=val&datos=det&w=1&f=tmax",
-		(response) => {
-			response.pipe(stream);
-			csv({ headers: ["field1"] })
-				.fromFile("./data/resumen.csv")
-				.then((jsonObj) => res.send(jsonObj));
-		}
-	);
-});
+app.use("/", express.static(path.join(__dirname, "..", "public")));
 
 app.get("/api/v1/autonomous_comunity", (req, res) => {
 	res.send(comunityData);
 });
 
 app.get("/api/v1/towns/:id", (req, res) => {
-	console.log(req.params.id);
-	const id = req.params.id
+	const id = req.params.id;
 	res.send(towns[id]);
+});
+
+app.get("/api/v1/hourly_weather/:id", (req, res) => {
+	const stream = fs.createWriteStream(path.join(__dirname, "resumen.xml"));
+	const id = req.params.id;
+	const url = `https://www.aemet.es/xml/municipios_h/localidad_h_${id}.xml`;
+	https.get(url, (response) => {
+		response.setEncoding("latin1");
+		response.pipe(stream);
+		fs.readFile(path.join(__dirname, "resumen.xml"), (err, data) => {
+			const dataXML = data.toString("utf-8");
+			const json = JSON.parse(parser.toJson(dataXML));
+			const { nombre, provincia, prediccion } = json.root;
+			const parserData = {
+				nombre,
+				provincia,
+				temperatura: prediccion?.dia[0]?.temperatura.map((temp) => {
+					return { hour: temp.periodo, value: temp["$t"] };
+				}),
+			};
+			res.send(parserData);
+		});
+	});
 });
 
 app.get("/*", (_req, res) => {
