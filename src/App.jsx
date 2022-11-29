@@ -6,11 +6,12 @@ import { SelectUI } from "./components/Select";
 import { TodayWeather } from "./views/todayWeather";
 import { LoadingContext } from "./context/loading/loadingProvider";
 import SpinnerUI from "./components/Spinner";
-	
+
 function App() {
 	const [comunities, setComunities] = useState([]);
 	const [towns, setTowns] = useState([]);
 	const [hourlyWeather, setHourlyWeather] = useState({});
+	const [currentTown, setCurrentTown] = useState(" ");
 	const { loading, showLoading, closeLoading } = useContext(LoadingContext);
 
 	const getComunities = async () => {
@@ -39,12 +40,17 @@ function App() {
 	};
 
 	const handleWeahter = (e) => {
+		setCurrentTown(e.target.value);
 		getHourlyWeather(e.target.value);
+	};
+
+	const handleReload = () => {
+		getHourlyWeather(currentTown);
 	};
 
 	return (
 		<VechaiProvider className="App">
-			<div className="container mx-auto py-24 px-44">
+			<div className="container mx-auto py-24 px-72">
 				<SelectUI
 					label="Selecciona una comunidad autonoma"
 					options={comunities}
@@ -59,7 +65,11 @@ function App() {
 					isDisabled={!towns.length}
 					isRequired
 				/>
-				{!loading ? <TodayWeather weather={hourlyWeather} /> : <SpinnerUI />}
+				{!loading ? (
+					<TodayWeather weather={hourlyWeather} reload={() => handleReload} />
+				) : (
+					<SpinnerUI />
+				)}
 			</div>
 		</VechaiProvider>
 	);

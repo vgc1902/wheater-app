@@ -2,6 +2,7 @@ const path = require("path");
 const https = require("https");
 const parser = require("xml2json");
 const fs = require("fs");
+const assetsRouter = require("./assets-router");
 const express = require("express");
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(function (req, res, next) {
 	res.setHeader("Access-Control-Allow-Credentials", true);
 	next();
 });
+
+app.use("/src", assetsRouter);
 
 app.use("/", express.static(path.join(__dirname, "..", "public")));
 
