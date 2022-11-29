@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-	VechaiProvider,
-	Select,
-	FormLabel,
-	RequiredIndicator,
-	Alert,
-} from "@vechaiui/react";
+import { VechaiProvider } from "@vechaiui/react";
 import axios from "axios";
 import apiRoutes from "./constants/apiRoutes";
+import { SelectUI } from "./components/select";
+import { TodayWeather } from "./views/todayWeather";
 
 function App() {
 	const [comunities, setComunities] = useState([]);
@@ -44,50 +40,21 @@ function App() {
 	return (
 		<VechaiProvider className="App">
 			<div className="container mx-auto py-24 px-44">
-				<div className="py-5">
-					<FormLabel>
-						Selecciona una comunidad autónoma <RequiredIndicator />
-					</FormLabel>
-					<Select
-						aria-label="Selecciona una comunidad autónoma"
-						onChange={handleComunity}
-					>
-						{comunities.map(({ name, code }) => (
-							<option key={code} value={code}>
-								{name}
-							</option>
-						))}
-					</Select>
-				</div>
-				<div className="py-5">
-					<FormLabel>
-						Selecciona una localidad <RequiredIndicator />
-					</FormLabel>
-					<Select
-						aria-label="Selecciona una localidad"
-						disabled={!towns.length}
-						onChange={handleWeahter}
-					>
-						<option value="" defaultValue={"..."} disabled hidden>
-							...
-						</option>
-						{towns.map(({ name, code }) => (
-							<option key={code} value={code}>
-								{name}
-							</option>
-						))}
-					</Select>
-				</div>
-				<div className="pt-20">
-					{hourlyWeather && !Object.keys(hourlyWeather).length ? (
-						<Alert variant="subtle">No existen datos.</Alert>
-					) : (
-						<div>
-							<p>{hourlyWeather.nombre}</p>
-							<p>{hourlyWeather.provincia}</p>
-						</div>
-					)}
-				</div>
+				<SelectUI
+					label="Selecciona una comunidad autonoma"
+					options={comunities}
+					handleChange={handleComunity}
+					isRequired
+				/>
+				<SelectUI
+					label="Selecciona una localidad"
+					options={towns}
+					handleChange={handleWeahter}
+					defaultOption="..."
+					isDisabled={!towns.length}
+					isRequired
+				/>
+				<TodayWeather weather={hourlyWeather} />
 			</div>
 		</VechaiProvider>
 	);
