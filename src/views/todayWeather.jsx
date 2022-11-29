@@ -1,5 +1,5 @@
 export const TodayWeather = ({ weather = {} }) => (
-	<div className="pt-20">
+	<div className="py-24">
 		{!Object.keys(weather).length ? (
 			<p className="text-center">
 				Para consultar los datos del tiempo selecciona una comunidad autónoma y

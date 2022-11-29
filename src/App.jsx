@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { VechaiProvider } from "@vechaiui/react";
 import axios from "axios";
 import apiRoutes from "./constants/apiRoutes";
-import { SelectUI } from "./components/select";
+import { SelectUI } from "./components/Select";
 import { TodayWeather } from "./views/todayWeather";
-
+import { LoadingContext } from "./context/loading/loadingProvider";
+import SpinnerUI from "./components/Spinner";
+	
 function App() {
 	const [comunities, setComunities] = useState([]);
 	const [towns, setTowns] = useState([]);
 	const [hourlyWeather, setHourlyWeather] = useState({});
+	const { loading, showLoading, closeLoading } = useContext(LoadingContext);
 
 	const getComunities = async () => {
 		const { data } = await axios.get(apiRoutes.autonomous_comunity);
@@ -21,8 +24,10 @@ function App() {
 	};
 
 	const getHourlyWeather = async (id) => {
+		showLoading();
 		const { data } = await axios.get(apiRoutes.hourly_weather(id));
 		setHourlyWeather(data);
+		closeLoading();
 	};
 
 	useEffect(() => {
@@ -54,7 +59,7 @@ function App() {
 					isDisabled={!towns.length}
 					isRequired
 				/>
-				<TodayWeather weather={hourlyWeather} />
+				{!loading ? <TodayWeather weather={hourlyWeather} /> : <SpinnerUI />}
 			</div>
 		</VechaiProvider>
 	);
